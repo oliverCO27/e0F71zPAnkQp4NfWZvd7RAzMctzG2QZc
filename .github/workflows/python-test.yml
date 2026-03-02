@@ -21,5 +21,8 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        FORK_OWNER: ${{ secrets.FORK_OWNER }}
       run: |
         python3 test.py
