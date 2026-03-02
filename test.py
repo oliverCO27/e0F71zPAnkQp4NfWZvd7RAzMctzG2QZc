@@ -10,7 +10,7 @@ from github import Github, Auth
 from ruamel.yaml import YAML
 
 # ========= CONFIG =========
-GITHUB_TOKEN = os.environ["GITHUB_TOKEN_KEY"]
+GITHUB_TOKEN = os.environ["GITHUB_KEY"]
 FORK_OWNER = os.environ["FORK_OWNER"]
 
 UPSTREAM_OWNER = "openclaw"
