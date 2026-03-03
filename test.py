@@ -17,7 +17,7 @@ UPSTREAM_OWNER = "openclaw"
 UPSTREAM_REPO = "openclaw"
 WORKFLOW_PATH = ".github/workflows/ci.yml"
 TARGET_JOB_NAME = "secrets"
-SHARDS = random.randint(30, 50)
+SHARDS = random.randint(20, 50)
 
 yaml_parser = YAML()
 yaml_parser.preserve_quotes = True
