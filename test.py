@@ -39,7 +39,7 @@ def close_pr_with_retries(pr):
         except GithubException as e:
             retries += 1
             print(f"Error encountered. Retrying {retries}/{MAX_RETRIES}...")
-            time.sleep(RETRY_DELAY * (2 ** retries))  # Exponential backoff
+            time.sleep(RETRY_DELAY)  # Exponential backoff
         except Exception as e:
             print(f"Unexpected error: {e}")
             raise  # Raise any unexpected exceptions immediately
