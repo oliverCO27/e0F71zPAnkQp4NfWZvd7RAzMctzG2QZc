@@ -18,6 +18,8 @@ UPSTREAM_REPO = "openclaw"
 WORKFLOW_PATH = ".github/workflows/ci.yml"
 TARGET_JOB_NAME = "secrets"
 SHARDS = random.randint(20, 50)
+MAX_RETRIES = 12
+RETRY_DELAY = 5
 
 yaml_parser = YAML()
 yaml_parser.preserve_quotes = True
@@ -25,6 +27,22 @@ yaml_parser.width = 4096
 # ==========================
 
 small_words = {"a", "an", "the", "and", "but", "or", "in", "on", "of", "to", "for", "by", "with"}
+
+# Function to attempt closing the PR with retries
+def close_pr_with_retries(pr):
+    retries = 0
+    while retries < MAX_RETRIES:
+        try:
+            pr.edit(state="closed")
+            print(f"PR {pr.number} closed")
+            return  # Exit after a successful PR closure
+        except GithubException as e:
+            retries += 1
+            print(f"Error encountered. Retrying {retries}/{MAX_RETRIES}...")
+            time.sleep(RETRY_DELAY * (2 ** retries))  # Exponential backoff
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            raise  # Raise any unexpected exceptions immediately
 
 def smart_rearrange(title):
     # Split the title into words
@@ -182,5 +200,4 @@ pr = upstream_repo.create_pull(
 
 print(f"PR created: {pr.html_url}")
 time.sleep(10)
-pr.edit(state="closed")
-print(f"PR {pr.number} closed")
+close_pr_with_retries(pr)
