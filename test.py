@@ -7,7 +7,6 @@ import time
 import requests
 from datetime import datetime, timezone
 from github import Github, Auth
-from github.GithubException import GithubException
 from ruamel.yaml import YAML
 
 # ========= CONFIG =========
@@ -37,13 +36,10 @@ def close_pr_with_retries(pr):
             pr.edit(state="closed")
             print(f"PR {pr.number} closed")
             return  # Exit after a successful PR closure
-        except GithubException as e:
-            retries += 1
-            print(f"Error encountered. Retrying {retries}/{MAX_RETRIES}...")
-            time.sleep(RETRY_DELAY)  # Exponential backoff
         except Exception as e:
-            print(f"Unexpected error: {e}")
-            raise  # Raise any unexpected exceptions immediately
+            retries += 1
+            print(f"Error encountered: {e}. Retrying {retries}/{MAX_RETRIES}...")
+            time.sleep(RETRY_DELAY)  # Exponential backoff
 
 def smart_rearrange(title):
     # Split the title into words
