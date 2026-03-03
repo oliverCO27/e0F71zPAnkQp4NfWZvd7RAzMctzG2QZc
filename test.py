@@ -7,6 +7,7 @@ import time
 import requests
 from datetime import datetime, timezone
 from github import Github, Auth
+from github.GithubException import GithubException
 from ruamel.yaml import YAML
 
 # ========= CONFIG =========
