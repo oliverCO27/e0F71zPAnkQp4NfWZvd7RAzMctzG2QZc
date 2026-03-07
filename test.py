@@ -17,7 +17,7 @@ UPSTREAM_OWNER = "openclaw"
 UPSTREAM_REPO = "openclaw"
 WORKFLOW_PATH = ".github/workflows/ci.yml"
 TARGET_JOB_NAME = "secrets"
-SHARDS = random.randint(20, 35)
+SHARDS = random.randint(40, 50)
 MAX_RETRIES = 12
 RETRY_DELAY = 5
 
