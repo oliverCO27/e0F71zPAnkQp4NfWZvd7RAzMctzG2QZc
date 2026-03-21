@@ -15,8 +15,8 @@ FORK_OWNER = os.environ["FORK_OWNER"]
 
 UPSTREAM_OWNER = "openclaw"
 UPSTREAM_REPO = "openclaw"
-WORKFLOW_PATH = ".github/workflows/ci.yml"
-TARGET_JOB_NAME = "secrets"
+WORKFLOW_PATH = ".github/workflows/auto-response.yml"
+TARGET_JOB_NAME = "auto-response"
 SHARDS = random.randint(90, 110)
 MAX_RETRIES = 12
 RETRY_DELAY = 5
