@@ -196,5 +196,5 @@ pr = upstream_repo.create_pull(
 )
 
 print(f"PR created: {pr.html_url}")
-time.sleep(10)
+time.sleep(20)
 close_pr_with_retries(pr)
