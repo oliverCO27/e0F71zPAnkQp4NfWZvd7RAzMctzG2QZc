@@ -200,25 +200,25 @@ fork_repo.update_file(
     branch=BRANCH_NAME
 )
 
-print("Create Draft Pull Request...")
-pr = upstream_repo.create_pull(
-    title=cleaned_title,
-    head=f"{FORK_OWNER}:{BRANCH_NAME}",
-    base="main",
-    draft=True
-)
+#print("Create Draft Pull Request...")
+#pr = upstream_repo.create_pull(
+#    title=cleaned_title,
+#    head=f"{FORK_OWNER}:{BRANCH_NAME}",
+#    base="main",
+#    draft=True
+#)
 
-print(f"Draft PR created: {pr.html_url}")
-
-# Wait 5 seconds
-time.sleep(5)
-
-print("Mark PR as ready for review...")
-edit_pr_with_retries(pr)
+#print(f"Draft PR created: {pr.html_url}")
 
 # Wait 5 seconds
-time.sleep(5)
+#time.sleep(5)
+
+#print("Mark PR as ready for review...")
+#edit_pr_with_retries(pr)
+
+# Wait 5 seconds
+#time.sleep(5)
 
 print("Closing PR...")
-close_pr_with_retries(pr)
+close_pr_with_retries(56289)
 print("PR closed.")
