@@ -41,6 +41,18 @@ def close_pr_with_retries(pr):
             print(f"Error encountered: {e}. Retrying {retries}/{MAX_RETRIES}...")
             time.sleep(RETRY_DELAY)  # Exponential backoff
 
+def edit_pr_with_retries(pr):
+    retries = 0
+    while retries < MAX_RETRIES:
+        try:
+            pr.edit(draft=False)
+            print(f"PR {pr.number} updated with {kwargs}")
+            return
+        except Exception as e:
+            retries += 1
+            print(f"Error editing PR: {e}. Retrying {retries}/{MAX_RETRIES} in {delay}s...")
+            time.sleep(RETRY_DELAY)
+
 def smart_rearrange(title):
     # Split the title into words
     words = title.split()
@@ -202,7 +214,7 @@ print(f"Draft PR created: {pr.html_url}")
 time.sleep(5)
 
 print("Mark PR as ready for review...")
-pr.edit(draft=False)
+edit_pr_with_retries(pr)
 
 # Wait 5 seconds
 time.sleep(5)
