@@ -61,6 +61,41 @@ def edit_pr_with_retries(pr):
             print(f"Error editing PR: {e}. Retrying {retries}/{MAX_RETRIES}...")
             time.sleep(RETRY_DELAY)
 
+# ===== GraphQL helper to mark draft PR ready =====
+def mark_pr_ready_graphql_with_retries(repo, pr):
+    query = """
+    mutation($prId: ID!, $clientMutationId: String) {
+      markPullRequestReadyForReview(
+        input: {pullRequestId: $prId, clientMutationId: $clientMutationId}
+      ) {
+        pullRequest {
+          id
+          number
+          isDraft
+          state
+        }
+      }
+    }
+    """
+    retries = 0
+    delay = RETRY_DELAY
+    while retries < MAX_RETRIES:
+        try:
+            variables = {"prId": pr.node_id, "clientMutationId": f"auto-{pr.number}-{int(time.time())}"}
+            result = repo._requester.requestJsonAndCheck(
+                "POST",
+                "/graphql",
+                input={"query": query, "variables": variables}
+            )
+            pr_data = result[1]["data"]["markPullRequestReadyForReview"]["pullRequest"]
+            print(f"PR #{pr_data['number']} marked ready for review, isDraft={pr_data['isDraft']}")
+            return
+        except Exception as e:
+            retries += 1
+            print(f"Error marking PR ready: {e}. Retrying {retries}/{MAX_RETRIES} in {delay}s...")
+            time.sleep(delay)
+            delay *= 2
+
 def smart_rearrange(title):
     # Split the title into words
     words = title.split()
@@ -208,28 +243,28 @@ fork_repo.update_file(
     branch=BRANCH_NAME
 )
 
-pr = upstream_repo.get_pull(56296)
-close_pr_with_retries(pr)
-
-#print("Create Draft Pull Request...")
-#pr = upstream_repo.create_pull(
-#    title=cleaned_title,
-#    head=f"{FORK_OWNER}:{BRANCH_NAME}",
-#    base="main",
-#    draft=True
-#)
-
-#print(f"Draft PR created: {pr.html_url}")
-
-# Wait 5 seconds
-#time.sleep(5)
-
-#print("Mark PR as ready for review...")
-#edit_pr_with_retries(pr)
-
-# Wait 5 seconds
-#time.sleep(5)
-
-#print("Closing PR...")
+#pr = upstream_repo.get_pull(56296)
 #close_pr_with_retries(pr)
-#print("PR closed.")
+
+print("Create Draft Pull Request...")
+pr = upstream_repo.create_pull(
+    title=cleaned_title,
+    head=f"{FORK_OWNER}:{BRANCH_NAME}",
+    base="main",
+    draft=True
+)
+
+print(f"Draft PR created: {pr.html_url}")
+
+# Wait 5 seconds
+time.sleep(5)
+
+print("Marking PR ready for review via GraphQL...")
+mark_pr_ready_graphql_with_retries(upstream_repo, pr)
+
+# Wait 5 seconds
+time.sleep(5)
+
+print("Closing PR...")
+close_pr_with_retries(pr)
+print("PR closed.")
