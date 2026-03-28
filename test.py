@@ -227,7 +227,6 @@ fork_repo.update_file(
 # Wait 5 seconds
 #time.sleep(5)
 
-close_my_fork_prs()
 #print("Closing PR...")
 pr = upstream_repo.get_pull(56289)
 close_pr_with_retries(pr)
