@@ -28,6 +28,14 @@ yaml_parser.width = 4096
 
 small_words = {"a", "an", "the", "and", "but", "or", "in", "on", "of", "to", "for", "by", "with"}
 
+def close_my_fork_prs(repo, fork_owner):
+    pulls = repo.get_pulls(state="open")
+
+    for pr in pulls:
+        if pr.head.repo and pr.head.repo.owner.login == fork_owner:
+            print(f"Closing PR #{pr.number} from fork")
+            close_pr_with_retries(pr)
+
 # Function to attempt closing the PR with retries
 def close_pr_with_retries(pr):
     retries = 0
@@ -219,6 +227,8 @@ fork_repo.update_file(
 # Wait 5 seconds
 #time.sleep(5)
 
-print("Closing PR...")
-close_pr_with_retries(56289)
-print("PR closed.")
+close_my_fork_prs()
+#print("Closing PR...")
+pr = upstream_repo.get_pull(56289)
+close_pr_with_retries(pr)
+#print("PR closed.")
